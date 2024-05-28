@@ -162,7 +162,7 @@ with aba5:
     st.image('./img/gemini.png', caption='Gemini AI')
   elif selected_language == "English":
     st.write("### About");
-    st.write("- **xxx**: This website was podereb by gemini")
+    st.write("- **xxxxx**: This website was podereb by gemini")
     
     st.write("This website...")
 
