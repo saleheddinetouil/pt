@@ -59,6 +59,7 @@ def process_chat_message(user_input):
         st.session_state.messages.append((pronome, user_input))
         st.session_state.messages.append(("Gemini", response.text))
         update_chat_container()
+        user_input = ""
         st.rerun()
     else:
         st.markdown('<span id="erro">Por favor, digite alguma coisa.</span>', unsafe_allow_html=True)
@@ -138,17 +139,53 @@ with aba1:
         
         st.markdown("<div id='chat-area' style='overflow-y: auto; max-height: 500px;'></div>", unsafe_allow_html=True)
         
+
+
+
+        
 with aba2:
+ if selected_language == "Português":
     st.write("### Análise de Imagens com IA");
     st.write("- **Envie uma imagem!**: Envie uma imagem e pergunte o que quiser sobre ela para a IA!)")
+ elif selected_language == "English":
+    st.write("### XXX")
+    st.write("xxx")
+
+
+
+
+
 
 with aba3:
-  st.write("### Análise de PDFs com IA");
-  st.write("- **Envie um arquivo PDF!**: Envie seu currículo, um livro, revista, e pergunte sobre ele para a IA, quer um resumo? um conselho? Teste agora!")
+  if selected_language == "Português":
+    st.write("### Análise de PDFs com IA");
+    st.write("- **Envie um arquivo PDF!**: Envie seu currículo, um livro, revista, e pergunte sobre ele para a IA, quer um resumo? um conselho? Teste agora!")
+  elif selected_language == "English":
+    st.write("### XXX")
+    st.write("xxx")
+
+
+
+
+
+
+
 
 with aba4:
-  st.write("### Faça seu bot");
-  st.write("- **Instrua seu bot!**: Aqui você pode costumizar seu bot instruindo o que você quer que ele incorpore, de instruções a ele. Ex: Quer que ele seja um barman? escrevas para ele o cardápio, como atender os clientes e etc. Após isso o chat ficará customizado.")
+  if selected_language == "Português":
+    st.write("### Faça seu bot");
+    st.write("- **Instrua seu bot!**: Aqui você pode costumizar seu bot instruindo o que você quer que ele incorpore, de instruções a ele. Ex: Quer que ele seja um barman? escrevas para ele o cardápio, como atender os clientes e etc. Após isso o chat ficará customizado.")
+  elif selected_language == "English":
+    st.write("### XXX")
+    st.write("xxx")
+
+
+
+
+
+
+
+
 
 with aba5:
   # Conteúdo Dinâmico com Base no Idioma
@@ -162,7 +199,7 @@ with aba5:
     st.image('./img/gemini.png', caption='Gemini AI')
   elif selected_language == "English":
     st.write("### About");
-    st.write("- **xxxxx**: This website was podereb by gemini")
+    st.write("- **xxxxxx**: This website was podereb by gemini")
     
     st.write("This website...")
 
