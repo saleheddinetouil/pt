@@ -16,6 +16,12 @@ genai.configure(api_key = API_KEY);
 model = genai.GenerativeModel('gemini-pro')
 chat = model.start_chat(history=[])
 
+messages = []
+
+# Global state variable for language
+if "selected_language" not in st.session_state:
+    st.session_state["selected_language"] = "English"
+
 # Incluindo estilos CSS do arquivo styles.css
 def local_css(file_name):
     with open(file_name) as f:
@@ -26,47 +32,112 @@ def local_css(file_name):
 local_css("./styles.css");
 
 ############# FUNÇÕES
+def set_language(language):
+    st.session_state["selected_language"] = language
+    st.experimental_rerun()
+
+# Função para atualizar o container
+def update_chat_container():
+    chat_message_html = f"""<div id="chat-area">{''.join([f'<div class="message {message_class}"><b>{user}:</b> {message}</div>' for user, message in messages])}</div>"""
+    # Exibe as mensagens no Streamlit
+    st.markdown(chat_message_html, unsafe_allow_html=True)
+
+        
 # Função para processar o envio de mensagem do chat
 def process_chat_message(user_input):
     if user_input:
         response = chat.send_message(user_input)
-        st.session_state.messages.append(("Você", user_input))
+
+        # Get the selected language
+        selected_language = st.session_state["selected_language"]
+
+        # Determine the pronoun based on language
+        if selected_language == "Português": 
+            pronome = "Você"
+        else:
+            pronome = "You"
+        st.session_state.messages.append((pronome, user_input))
         st.session_state.messages.append(("Gemini", response.text))
+        update_chat_container()
         st.rerun()
     else:
-        st.markdown('<span id="empty-input-error">Por favor, digite uma pergunta.</span>', unsafe_allow_html=True)
+        st.markdown('<span id="erro">Por favor, digite alguma coisa.</span>', unsafe_allow_html=True)
 
+# Language selection UI
+with st.sidebar:
+    language_options = ["English", "Português"]
+    st.sidebar.title('CHAT BOT OPTIONS')
+    selected_language = st.selectbox("LINGUAGEM", language_options)
+
+    if selected_language != st.session_state["selected_language"]:
+        set_language(selected_language)
 
 
 #st.set_page_config(layout='wide')
 st.title("Chat Bot 🤖🔍🌎 ")
 
 
-aba1, aba2, aba3, aba4, aba5 = st.tabs(['Chat Bot Geral','Análise de Imagens','Análise de PDFs', 'Bot Personalizado', 'Sobre']);
+if selected_language == "Português":
+        aba1, aba2, aba3, aba4, aba5 = st.tabs(['Chat Bot Geral','Análise de Imagens','Análise de PDFs', 'Bot Personalizado', 'Sobre']);
+elif selected_language == "English":
+        aba1, aba2, aba3, aba4, aba5 = st.tabs(['Chat Bot Geral','Image Review','PDFs Review', 'Custom Bot', 'About']);
 
 with aba1:
-    st.write("### Chat Bot Geral:")
-    st.write("- **Pergunte o que quiser**: Diga um oi, pergunte qual a origem da roupa branca no reveillon, por que o céu é azul?, deixe a criatividade rolar solta (não use o bot para consultas de pesquisas, vá atrás para confiar as informações, sempre bom ter uma fonte confiável);")
+    if selected_language == "Português":
+        st.write("### Chat Bot:")
+        st.write("- **Pergunte o que quiser**: Diga um oi, pergunte qual a origem da roupa branca no reveillon, por que o céu é azul?, deixe a criatividade rolar solta (não use o bot para consultas de pesquisas, vá atrás para confiar as informações, sempre bom ter uma fonte confiável);")
 
-    # Container para exibir as mensagens do chat
-    chat_container = st.container()
+        # Container para exibir as mensagens do chat
+        chat_container = st.container()
 
-    if 'messages' not in st.session_state:
-        st.session_state.messages = []
+        if 'messages' not in st.session_state:
+            st.session_state.messages = []
 
-    # Exibindo as mensagens do chat
-    with chat_container:
-        for user, message in st.session_state.messages:
-            st.write(f"**{user}**: {message}")
+        # Exibindo as mensagens do chat
+        with chat_container:
+            st.markdown('<div class="chat-container">', unsafe_allow_html=True)
+            for user, message in st.session_state.messages:
+                message_class = "user" if user == "Você" else "bot"
+                st.markdown(f'<div class="message {message_class}"><b>{user}:</b> {message}</div>', unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)
 
-    # Input do usuário
-    user_input = st.text_input("Você: ", "")
+        # Input do usuário
+        user_input = st.text_input("Você: ", "")
 
-    # Botão "Enviar"
-    if st.button("Enviar", key="chat"):
-        process_chat_message(user_input)
-        user_input = "";
+        # Botão "Enviar"
+        if st.button("Enviar", key="chat"):
+            process_chat_message(user_input)
+            user_input = "";
+        
+        st.markdown("<div id='chat-area' style='overflow-y: auto; max-height: 500px;'></div>", unsafe_allow_html=True)
+    elif selected_language == "English":
+        st.write("### Chat Bot:")
+        st.write("- **Ask anything you want**: Say hello, ask where the white clothes come from on New Year's Eve, why the sky is blue, let your creativity run wild (don't use the bot for research queries, go back and trust the information, it's always good to have a reliable source).")
 
+        # Container para exibir as mensagens do chat
+        chat_container = st.container()
+
+        if 'messages' not in st.session_state:
+            st.session_state.messages = []
+
+        # Exibindo as mensagens do chat
+        with chat_container:
+            st.markdown('<div class="chat-container">', unsafe_allow_html=True)
+            for user, message in st.session_state.messages:
+                message_class = "user" if user == "You" else "bot"
+                st.markdown(f'<div class="message {message_class}"><b>{user}:</b> {message}</div>', unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)
+
+        # Input do usuário
+        user_input = st.text_input("You: ", "")
+
+        # Botão "Enviar"
+        if st.button("Send", key="chat"):
+            process_chat_message(user_input)
+            user_input = "";
+        
+        st.markdown("<div id='chat-area' style='overflow-y: auto; max-height: 500px;'></div>", unsafe_allow_html=True)
+        
 with aba2:
     st.write("### Análise de Imagens com IA");
     st.write("- **Envie uma imagem!**: Envie uma imagem e pergunte o que quiser sobre ela para a IA!)")
@@ -80,5 +151,20 @@ with aba4:
   st.write("- **Instrua seu bot!**: Aqui você pode costumizar seu bot instruindo o que você quer que ele incorpore, de instruções a ele. Ex: Quer que ele seja um barman? escrevas para ele o cardápio, como atender os clientes e etc. Após isso o chat ficará customizado.")
 
 with aba5:
-  st.write("### Sobre");
-  st.write("- **Informações sobre o site**: Esse site foi feito através do uso da biblioteca python Streamit, usando a API do Gemini para incorporar o uso dos Bots.")
+  # Conteúdo Dinâmico com Base no Idioma
+  if selected_language == "Português":
+    st.write("### Sobre");
+    st.write("- **Informações sobre o site**: Esse site foi feito através do uso da biblioteca python Streamit, usando a API do Gemini para incorporar o uso dos Bots.")
+    
+    st.write("Esse site...")
+
+    # Gemini
+    st.image('./img/gemini.png', caption='Gemini AI')
+  elif selected_language == "English":
+    st.write("### About");
+    st.write("- **xxx**: This website was podereb by gemini")
+    
+    st.write("This website...")
+
+    #Gemini
+    st.image('./img/gemini.png', caption='Gemini AI')
