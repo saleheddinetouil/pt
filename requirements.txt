@@ -1,3 +1,4 @@
 streamlit
 google.generativeai
-from dotenv import load_dotenv
+dotenv
+load_dotenv
