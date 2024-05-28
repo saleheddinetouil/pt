@@ -1,8 +1,2 @@
 streamlit
 google.generativeai
-dotenv
-requests
-pillow
-pathlib
-tqdm
-os
