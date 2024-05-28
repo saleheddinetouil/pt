@@ -1,0 +1,11 @@
+#empty-input-error{
+    color: red;
+}
+
+.chat-container {
+    background-color: #f5f5f5; /* Cor de fundo desejada */
+    padding: 10px; /* Espaçamento interno para as mensagens */
+    border-radius: 10px; /* Borda arredondada */
+    max-height: 400px; /* Altura máxima do chat (ajuste conforme necessário) */
+    overflow-y: auto; /* Barra de rolagem vertical quando o conteúdo excede a altura */
+}
