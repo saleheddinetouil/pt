@@ -1,3 +1,8 @@
 streamlit
 google.generativeai
 dotenv
+equests
+pillow
+pathlib
+tqdm
+os
