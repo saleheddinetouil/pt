@@ -22,6 +22,9 @@ messages = []
 if "selected_language" not in st.session_state:
     st.session_state["selected_language"] = "English"
 
+if "selected_font_size" not in st.session_state:
+    st.session_state["selected_font_size"] = "Medium"
+
 # Incluindo estilos CSS do arquivo styles.css
 def local_css(file_name):
     with open(file_name) as f:
@@ -34,7 +37,7 @@ local_css("./styles.css");
 ############# FUNÇÕES
 def set_language(language):
     st.session_state["selected_language"] = language
-    st.experimental_rerun()
+    st.rerun()
 
 # Função para atualizar o container
 def update_chat_container():
@@ -59,23 +62,39 @@ def process_chat_message(user_input):
         st.session_state.messages.append((pronome, user_input))
         st.session_state.messages.append(("Gemini", response.text))
         update_chat_container()
-        user_input = ""
         st.rerun()
     else:
         st.markdown('<span id="erro">Por favor, digite alguma coisa.</span>', unsafe_allow_html=True)
 
-# Language selection UI
+def set_font_size(font_size):
+    if font_size == "Small":
+        st.markdown('<style>body { font-size: small; } p { font-size: small; } h1,h3 {font-size: 22px;}</style>', unsafe_allow_html=True)
+    elif font_size == "Medium":
+        st.markdown('<style>body { font-size: medium; } p,li,h3,ul,h1 { font-size: medium; }</style>', unsafe_allow_html=True)
+    elif font_size == "Large":
+        st.markdown('<style>body { font-size: large; } h3,h1 { font-size: 45px; } p {font-size: 30px;}</style>', unsafe_allow_html=True)
+
+# Languages
 with st.sidebar:
     language_options = ["English", "Português"]
-    st.sidebar.title('CHAT BOT OPTIONS')
-    selected_language = st.selectbox("LINGUAGEM", language_options)
+    st.sidebar.title('OPTIONS 📌')
+    selected_language = st.selectbox("LINGUAGEM 🌎", language_options)
 
     if selected_language != st.session_state["selected_language"]:
         set_language(selected_language)
 
+# Fonts
+with st.sidebar:
+    font_size_options = ["Medium", "Small", "Large"]
+    selected_font_size = st.selectbox("Font Size 🔍", font_size_options)
+    st.image('./img/gemini.png', caption='Powered by Gemini AI')
+
+    if selected_font_size != st.session_state["selected_font_size"]:
+        set_font_size(selected_font_size)
+
 
 #st.set_page_config(layout='wide')
-st.title("Chat Bot 🤖🔍🌎 ")
+st.title("Chat Bot 🤖💭 ")
 
 
 if selected_language == "Português":
@@ -103,10 +122,10 @@ with aba1:
             st.markdown('</div>', unsafe_allow_html=True)
 
         # Input do usuário
-        user_input = st.text_input("Você: ", "")
+        user_input = st.text_input("Você: ", key = "user_input")
 
         # Botão "Enviar"
-        if st.button("Enviar", key="chat"):
+        if st.button("Enviar", key="chat_button"):
             process_chat_message(user_input)
             user_input = "";
         
@@ -130,19 +149,15 @@ with aba1:
             st.markdown('</div>', unsafe_allow_html=True)
 
         # Input do usuário
-        user_input = st.text_input("You: ", "")
+        user_input = st.text_input("You: ", key = "user_input")
 
         # Botão "Enviar"
-        if st.button("Send", key="chat"):
+        if st.button("Send", key="chat_button"):
             process_chat_message(user_input)
             user_input = "";
         
         st.markdown("<div id='chat-area' style='overflow-y: auto; max-height: 500px;'></div>", unsafe_allow_html=True)
-        
 
-
-
-        
 with aba2:
  if selected_language == "Português":
     st.write("### Análise de Imagens com IA");
