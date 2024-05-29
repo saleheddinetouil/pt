@@ -122,12 +122,10 @@ with aba1:
             st.markdown('</div>', unsafe_allow_html=True)
 
         # Input do usuário
-        user_input = st.text_input("Você: ", key = "user_input")
+        user_input = st.chat_input("Diga alguma coisa... ", key = "user_input")
+        if user_input:
+            process_chat_message(user_input);
 
-        # Botão "Enviar"
-        if st.button("Enviar", key="chat_button"):
-            process_chat_message(user_input)
-            user_input = "";
         
         st.markdown("<div id='chat-area' style='overflow-y: auto; max-height: 500px;'></div>", unsafe_allow_html=True)
     elif selected_language == "English":
@@ -149,12 +147,9 @@ with aba1:
             st.markdown('</div>', unsafe_allow_html=True)
 
         # Input do usuário
-        user_input = st.text_input("You: ", key = "user_input")
-
-        # Botão "Enviar"
-        if st.button("Send", key="chat_button"):
-            process_chat_message(user_input)
-            user_input = "";
+        user_input = st.chat_input("Write something... ", key = "user_input")
+        if user_input:
+            process_chat_message(user_input);
         
         st.markdown("<div id='chat-area' style='overflow-y: auto; max-height: 500px;'></div>", unsafe_allow_html=True)
 
