@@ -18,23 +18,22 @@ chat = model.start_chat(history=[])
 
 messages = []
 
-# Global state variable for language
+# Variáveis Globais
 if "selected_language" not in st.session_state:
     st.session_state["selected_language"] = "English"
 
 if "selected_font_size" not in st.session_state:
     st.session_state["selected_font_size"] = "Medium"
 
-# Incluindo estilos CSS do arquivo styles.css
+# CSS
 def local_css(file_name):
     with open(file_name) as f:
         
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-# Chamando a função local_css com o nome do arquivo styles.css
 local_css("./styles.css");
 
-############# FUNÇÕES
+############# FUNÇÕES 
 def set_language(language):
     st.session_state["selected_language"] = language
     st.rerun()
@@ -74,7 +73,10 @@ def set_font_size(font_size):
     elif font_size == "Large":
         st.markdown('<style>body { font-size: large; } h3,h1 { font-size: 45px; } p {font-size: 30px;}</style>', unsafe_allow_html=True)
 
-# Languages
+
+
+######## Sidebars - Filtros
+#Linguagem
 with st.sidebar:
     language_options = ["English", "Português"]
     st.sidebar.title('OPTIONS 📌')
@@ -83,7 +85,7 @@ with st.sidebar:
     if selected_language != st.session_state["selected_language"]:
         set_language(selected_language)
 
-# Fonts
+#Fontes
 with st.sidebar:
     font_size_options = ["Medium", "Small", "Large"]
     selected_font_size = st.selectbox("Font Size 🔍", font_size_options)
@@ -93,10 +95,9 @@ with st.sidebar:
         set_font_size(selected_font_size)
 
 
-#st.set_page_config(layout='wide')
 st.title("Chat Bot 🤖💭 ")
 
-
+#Mudando linguagem da aba conforme o filtro
 if selected_language == "Português":
         aba1, aba2, aba3, aba4, aba5 = st.tabs(['Chat Bot Geral','Análise de Imagens','Análise de PDFs', 'Bot Personalizado', 'Sobre']);
 elif selected_language == "English":
@@ -105,7 +106,7 @@ elif selected_language == "English":
 with aba1:
     if selected_language == "Português":
         st.write("### Chat Bot:")
-        st.write("- **Pergunte o que quiser**: Diga um oi, pergunte qual a origem da roupa branca no reveillon, por que o céu é azul?, deixe a criatividade rolar solta (não use o bot para consultas de pesquisas, vá atrás para confiar as informações, sempre bom ter uma fonte confiável);")
+        st.write(" 📍 **Pergunte o que quiser!** Diga um oi, pergunte qual a origem da roupa branca no reveillon, por que o céu é azul?, deixe a criatividade rolar solta (não use o bot para consultas de pesquisas, vá atrás para confiar as informações, sempre bom ter uma fonte confiável);")
 
         # Container para exibir as mensagens do chat
         chat_container = st.container()
@@ -121,7 +122,7 @@ with aba1:
                 st.markdown(f'<div class="message {message_class}"><b>{user}:</b> {message}</div>', unsafe_allow_html=True)
             st.markdown('</div>', unsafe_allow_html=True)
 
-        # Input do usuário
+        # Input do usuário usando chat input (text_input havia dado falhas, chat é melhor para o nosso caso)
         user_input = st.chat_input("Diga alguma coisa... ", key = "user_input")
         if user_input:
             process_chat_message(user_input);
@@ -130,7 +131,7 @@ with aba1:
         st.markdown("<div id='chat-area' style='overflow-y: auto; max-height: 500px;'></div>", unsafe_allow_html=True)
     elif selected_language == "English":
         st.write("### Chat Bot:")
-        st.write("- **Ask anything you want**: Say hello, ask where the white clothes come from on New Year's Eve, why the sky is blue, let your creativity run wild (don't use the bot for research queries, go back and trust the information, it's always good to have a reliable source).")
+        st.write(" 📍 **Ask anything you want!** Say hello, ask where the white clothes come from on New Year's Eve, why the sky is blue, let your creativity run wild (don't use the bot for research queries, go back and trust the information, it's always good to have a reliable source).")
 
         # Container para exibir as mensagens do chat
         chat_container = st.container()
@@ -146,7 +147,7 @@ with aba1:
                 st.markdown(f'<div class="message {message_class}"><b>{user}:</b> {message}</div>', unsafe_allow_html=True)
             st.markdown('</div>', unsafe_allow_html=True)
 
-        # Input do usuário
+        # Input do usuário usando chat input (text_input havia dado falhas, chat é melhor para o nosso caso)
         user_input = st.chat_input("Write something... ", key = "user_input")
         if user_input:
             process_chat_message(user_input);
@@ -157,6 +158,7 @@ with aba2:
  if selected_language == "Português":
     st.write("### Análise de Imagens com IA");
     st.write("- **Envie uma imagem!**: Envie uma imagem e pergunte o que quiser sobre ela para a IA!)")
+ 
  elif selected_language == "English":
     st.write("### XXX")
     st.write("xxx")
@@ -170,6 +172,7 @@ with aba3:
   if selected_language == "Português":
     st.write("### Análise de PDFs com IA");
     st.write("- **Envie um arquivo PDF!**: Envie seu currículo, um livro, revista, e pergunte sobre ele para a IA, quer um resumo? um conselho? Teste agora!")
+  
   elif selected_language == "English":
     st.write("### XXX")
     st.write("xxx")
@@ -185,6 +188,7 @@ with aba4:
   if selected_language == "Português":
     st.write("### Faça seu bot");
     st.write("- **Instrua seu bot!**: Aqui você pode costumizar seu bot instruindo o que você quer que ele incorpore, de instruções a ele. Ex: Quer que ele seja um barman? escrevas para ele o cardápio, como atender os clientes e etc. Após isso o chat ficará customizado.")
+  
   elif selected_language == "English":
     st.write("### XXX")
     st.write("xxx")
@@ -201,17 +205,19 @@ with aba5:
   # Conteúdo Dinâmico com Base no Idioma
   if selected_language == "Português":
     st.write("### Sobre");
-    st.write("- **Informações sobre o site**: Esse site foi feito através do uso da biblioteca python Streamit, usando a API do Gemini para incorporar o uso dos Bots.")
-    
-    st.write("Esse site...")
+    st.write("Este site foi contruido usando a biblioteca Streamlit do python através da API do Google Gemini, a inteligencia artificial do Google.")
 
     # Gemini
     st.image('./img/gemini.png', caption='Gemini AI')
+    #Streamlit
+    st.image('./img/Streamlit.png', caption='Streamlit Logo')
+
   elif selected_language == "English":
     st.write("### About");
-    st.write("- **xxxxxx**: This website was podereb by gemini")
+    st.write("This site was built using the Streamlit python library via the Google Gemini API, Google's artificial intelligence.")
     
-    st.write("This website...")
-
     #Gemini
     st.image('./img/gemini.png', caption='Gemini AI')
+
+    #Streamlit
+    st.image('./img/Streamlit.png', caption='Streamlit Logo')
