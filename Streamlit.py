@@ -6,6 +6,7 @@ import PIL.Image
 import pathlib
 import tqdm
 import os
+from streamlit_lottie import st_lottie #Import de arquivos lottie animados
 from dotenv import load_dotenv
 
 ## Carregando arquivo .env (variáveis de ambiente)
@@ -111,7 +112,9 @@ def set_background_messages(color_message):
 #Linguagem
 with st.sidebar:
     language_options = ["English", "Português"]
-    st.sidebar.title('OPTIONS 📌')
+    st.markdown('''<style> [data-testid="stMarkdownContainer"] h1 { font-size: 45px; text-shadow: 2px -2px #466EFF; }</style>''', unsafe_allow_html=True)
+    st.sidebar.title('SETTINGS ⚙️')
+    st.lottie("https://lottie.host/9368811a-f341-49a8-b7ef-31c5ce359ade/mnJMB6MDDM.json")
     selected_language = st.selectbox("LINGUAGEM 🌎", language_options)
 
     if selected_language != st.session_state["selected_language"]:
@@ -210,7 +213,7 @@ with aba1:
 with aba2:  
  if selected_language == "Português":
     st.write("### Análise de Imagens com IA")
-    st.write("- **Envie uma imagem!**: Envie uma imagem e pergunte o que quiser sobre ela para a IA! (Suporta até 20MB)")
+    st.write("📍 **Envie uma imagem!**: Envie uma imagem e pergunte o que quiser sobre ela para a IA! (Suporta até 20MB)")
         
 
     model = genai.GenerativeModel('gemini-pro-vision') ## para analisar as imagens, precisamos de outra versão do gemini
@@ -246,7 +249,7 @@ with aba2:
 
  elif selected_language == "English":
     st.write("### Image Review with AI")
-    st.write("- **Upload an image!**: Upload an image and ask the AI anything about it! (IA supports 20MB)")
+    st.write("📍 **Upload an image!**: Upload an image and ask the AI anything about it! (IA supports 20MB)")
     
     model = genai.GenerativeModel('gemini-pro-vision') ## para analisar as imagens, precisamos de outra versão do gemini
     uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"], key = "image")
@@ -288,11 +291,11 @@ with aba2:
 with aba3:
   if selected_language == "Português":
     st.write("### Análise de PDFs com IA");
-    st.write("- **Envie um arquivo PDF!**: Envie seu currículo, um livro, revista, e pergunte sobre ele para a IA, quer um resumo? um conselho? Teste agora!")
+    st.write("📍 **Envie um arquivo PDF!**: Envie seu currículo, um livro, revista, e pergunte sobre ele para a IA, quer um resumo? um conselho? Teste agora!")
   
   elif selected_language == "English":
     st.write("### PDF's Review with an IA");
-    st.write("- **Send a PDF file!**: Send your resume/curriculum, a magazine, a book, ask about it to the IA, wants a summary? an advice? Try it now!")
+    st.write("📍 **Send a PDF file!**: Send your resume/curriculum, a magazine, a book, ask about it to the IA, wants a summary? an advice? Try it now!")
   
 
 
