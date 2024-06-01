@@ -6,6 +6,8 @@ import PIL.Image
 import pathlib
 import tqdm
 import os
+import time
+import json
 #import streamlit_lottie #Import de arquivos lottie animados
 from dotenv import load_dotenv
 
@@ -114,7 +116,12 @@ with st.sidebar:
     language_options = ["English", "Português"]
     st.markdown('''<style> [data-testid="stMarkdownContainer"] h1 { font-size: 45px; text-shadow: 2px -2px #466EFF; }</style>''', unsafe_allow_html=True)
     st.sidebar.title('SETTINGS ⚙️')
-    st.lottie("https://lottie.host/9368811a-f341-49a8-b7ef-31c5ce359ade/mnJMB6MDDM.json")
+
+    with open('/workspaces/Chat-Bot/img/Animation.json') as f:
+        lottie_animation = json.load(f)
+    
+    st.lottie(lottie_animation)
+
     selected_language = st.selectbox("LINGUAGEM 🌎", language_options)
 
     if selected_language != st.session_state["selected_language"]:
