@@ -117,7 +117,7 @@ with st.sidebar:
     st.markdown('''<style> [data-testid="stMarkdownContainer"] h1 { font-size: 45px; text-shadow: 2px -2px #466EFF; }</style>''', unsafe_allow_html=True)
     st.sidebar.title('SETTINGS ⚙️')
 
-    with open('/workspaces/Chat-Bot/img/Animation.json') as f:
+    with open('./img/Animation.json') as f:
         lottie_animation = json.load(f)
     
     st.lottie(lottie_animation)
