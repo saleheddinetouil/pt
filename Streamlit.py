@@ -18,6 +18,7 @@ model = genai.GenerativeModel('gemini-pro')
 chat = model.start_chat(history=[])
 
 messages = []
+image_messages = []
 
 # Variáveis Globais
 if "selected_language" not in st.session_state:
@@ -120,6 +121,7 @@ with st.sidebar:
 with st.sidebar:
     font_size_options = ["Medium", "Small", "Large"]
     selected_font_size = st.selectbox("Font Size 🔍", font_size_options)
+    st.sidebar.markdown("---")
     
     if selected_font_size != st.session_state["selected_font_size"]:
         set_font_size(selected_font_size)
@@ -136,6 +138,7 @@ with st.sidebar:
 with st.sidebar:
     background_options_messages = ["Padrão", "Branco e Preto", "Azul Claro e Roxo", "Azul Claro e Cinza"]
     selected_background_messages = st.radio(" Background Messages 🎨", background_options_messages)
+    st.sidebar.markdown("---")
     st.image('./img/gemini.png', caption='Powered by Gemini AI')
 
     if selected_background_messages != st.session_state["selected_background_messages"]:
@@ -161,13 +164,11 @@ with aba1:
         st.write("### Chat Bot:")
         st.write(" 📍 **Pergunte o que quiser!** Diga um oi, pergunte qual a origem da roupa branca no reveillon, por que o céu é azul?, deixe a criatividade rolar solta (não use o bot para consultas de pesquisas, vá atrás para confiar as informações, sempre bom ter uma fonte confiável);")
 
-        # Container para exibir as mensagens do chat
         chat_container = st.container()
 
         if 'messages' not in st.session_state:
             st.session_state.messages = []
 
-        # Exibindo as mensagens do chat
         with chat_container:
             st.markdown('<div class="chat-container">', unsafe_allow_html=True)
             for user, message in st.session_state.messages:
@@ -175,7 +176,6 @@ with aba1:
                 st.markdown(f'<div class="message {message_class}"><b>{user}:</b> {message}</div>', unsafe_allow_html=True)
             st.markdown('</div>', unsafe_allow_html=True)
 
-        # Input do usuário usando chat input (text_input havia dado falhas, chat é melhor para o nosso caso)
         user_input = st.chat_input("Diga alguma coisa... ", key = "user_input")
         if user_input:
             process_chat_message(user_input);
@@ -186,13 +186,11 @@ with aba1:
         st.write("### Chat Bot:")
         st.write(" 📍 **Ask anything you want!** Say hello, ask where the white clothes come from on New Year's Eve, why the sky is blue, let your creativity run wild (don't use the bot for research queries, go back and trust the information, it's always good to have a reliable source).")
 
-        # Container para exibir as mensagens do chat
         chat_container = st.container()
 
         if 'messages' not in st.session_state:
             st.session_state.messages = []
 
-        # Exibindo as mensagens do chat
         with chat_container:
             st.markdown('<div class="chat-container">', unsafe_allow_html=True)
             for user, message in st.session_state.messages:
@@ -200,21 +198,87 @@ with aba1:
                 st.markdown(f'<div class="message {message_class}"><b>{user}:</b> {message}</div>', unsafe_allow_html=True)
             st.markdown('</div>', unsafe_allow_html=True)
 
-        # Input do usuário usando chat input (text_input havia dado falhas, chat é melhor para o nosso caso)
         user_input = st.chat_input("Write something... ", key = "user_input")
         if user_input:
             process_chat_message(user_input);
         
         st.markdown("<div id='chat-area' style='overflow-y: auto; max-height: 500px;'></div>", unsafe_allow_html=True)
 
-with aba2:
+
+#Agora para a aba2, foi fundamental acessar a documentação do gemini, aqui precisamos alterar o modelo da IA, 
+#para que possamos conversar enviando imagens. De resto, repitimos o processo da aba1
+with aba2:  
  if selected_language == "Português":
-    st.write("### Análise de Imagens com IA");
-    st.write("- **Envie uma imagem!**: Envie uma imagem e pergunte o que quiser sobre ela para a IA!)")
- 
+    st.write("### Análise de Imagens com IA")
+    st.write("- **Envie uma imagem!**: Envie uma imagem e pergunte o que quiser sobre ela para a IA! (Suporta até 20MB)")
+        
+
+    model = genai.GenerativeModel('gemini-pro-vision') ## para analisar as imagens, precisamos de outra versão do gemini
+    uploaded_file = st.file_uploader("Escolha uma imagem...", type=["jpg", "jpeg", "png"])
+    if uploaded_file is not None:
+        image = Image.open(uploaded_file)
+        st.image(image, caption='Imagem Enviada', use_column_width=True)
+        st.write("Analisando a imagem...")
+
+        if 'image_messages' not in st.session_state:
+            st.session_state.image_messages = []
+
+        if len(st.session_state.image_messages) == 0:
+            st.session_state.image_messages.append(("Você", f"Analise esta imagem: {uploaded_file.name}"))
+            response = model.generate_content(["Analize esta imagem", image]) #Primeira pergunta padrão que será enviada, mas depois podemos fazer mais
+            response.resolve()
+            st.session_state.image_messages.append(("Gemini", response.text))
+
+        chat_container = st.container()
+        with chat_container:
+            st.markdown('<div class="chat-container">', unsafe_allow_html=True)
+            for user, message in st.session_state.image_messages:
+                message_class = "user" if user == "Você" else "bot"
+                st.markdown(f'<div class="message {message_class}"><b>{user}:</b> {message}</div>', unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)
+
+        user_input = st.chat_input("Pergunte algo sobre a imagem...", key="image_user_input")
+        if user_input:
+            st.session_state.image_messages.append(("Você", user_input))
+            response = chat.send_message(user_input)
+            st.session_state.image_messages.append(("Gemini", response.text))
+            st.rerun()
+
  elif selected_language == "English":
-    st.write("### XXX")
-    st.write("xxx")
+    st.write("### Image Review with AI")
+    st.write("- **Upload an image!**: Upload an image and ask the AI anything about it! (IA supports 20MB)")
+    
+    model = genai.GenerativeModel('gemini-pro-vision') ## para analisar as imagens, precisamos de outra versão do gemini
+    uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"], key = "image")
+    if uploaded_file is not None:
+        image = PIL.Image.open(uploaded_file)
+        st.image(image, caption='Uploaded Image', use_column_width=True)
+        st.write("Analyzing the image...")
+
+        if 'image_messages' not in st.session_state:
+            st.session_state.image_messages = []
+
+        if len(st.session_state.image_messages) == 0:
+            st.session_state.image_messages.append(("You", f"Analyze this image: {uploaded_file.name}"))
+            response = model.generate_content(["Analyze this image", image])
+            response.resolve()
+            st.session_state.image_messages.append(("Gemini", response.text))
+
+        chat_container = st.container()
+        with chat_container:
+            st.markdown('<div class="chat-container">', unsafe_allow_html=True)
+            for user, message in st.session_state.image_messages:
+                message_class = "user" if user == "You" else "bot"
+                st.markdown(f'<div class="message {message_class}"><b>{user}:</b> {message}</div>', unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)
+
+        user_input = st.chat_input("Ask something about the image...", key="image_user_input")
+
+        if user_input:
+            st.session_state.image_messages.append(("You", user_input))
+            response = chat.send_message(user_input)
+            st.session_state.image_messages.append(("Gemini", response.text))
+            st.rerun()
 
 
 
@@ -227,10 +291,9 @@ with aba3:
     st.write("- **Envie um arquivo PDF!**: Envie seu currículo, um livro, revista, e pergunte sobre ele para a IA, quer um resumo? um conselho? Teste agora!")
   
   elif selected_language == "English":
-    st.write("### XXX")
-    st.write("xxx")
-
-
+    st.write("### XXX");
+    st.write("- **XXX**: XXX")
+  
 
 
 
