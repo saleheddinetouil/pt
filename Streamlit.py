@@ -8,6 +8,7 @@ import tqdm
 import os
 from dotenv import load_dotenv
 
+## Carregando arquivo .env (variáveis de ambiente)
 load_dotenv()
 
 API_KEY = os.getenv("API_KEY");
@@ -25,7 +26,13 @@ if "selected_language" not in st.session_state:
 if "selected_font_size" not in st.session_state:
     st.session_state["selected_font_size"] = "Medium"
 
-# CSS
+if "selected_background" not in st.session_state:
+    st.session_state["selected_background"] = "Padrão"
+
+if "selected_background_messages" not in st.session_state:
+    st.session_state["selected_background_messages"] = "Padrão"
+
+# Importando pasta de CSS
 def local_css(file_name):
     with open(file_name) as f:
         
@@ -36,7 +43,7 @@ local_css("./styles.css");
 ############# FUNÇÕES 
 def set_language(language):
     st.session_state["selected_language"] = language
-    st.rerun()
+    #st.rerun() apenas para testes
 
 # Função para atualizar o container
 def update_chat_container():
@@ -74,7 +81,31 @@ def set_font_size(font_size):
         st.markdown('<style>body { font-size: large; } h3,h1 { font-size: 45px; } p {font-size: 30px;}</style>', unsafe_allow_html=True)
 
 
+def set_background(color):
+    if color == "Branco":
+        st.markdown('''<style> [data-testid="stSidebarContent"] { background-color: #D7D5CD; } [data-testid="stAppViewContainer"] { background-color: white;} 
+                    [data-testid="stHeader"] { background-color: white;}  [data-testid="stSidebarCollapseButton"] { background-color: #D7D5CD;} [data-testid="stMainMenu"] { background-color: #D7D5CD;} 
+                    [data-testid="main-menu-list"] { background-color: #D7D5CD;} [data-testid="stImageCaption"] {color: black} p,li,ul,h3,h1,h2,button { color: black; }</style>''', unsafe_allow_html=True)
+        
+    elif color == "Padrão": 
+        st.markdown('<style></style>', unsafe_allow_html=True)
 
+
+def set_background_messages(color_message):
+    if color_message == "Branco e Preto":
+        st.markdown('<style> div.message.user { background-color: white; color: black} div.message.bot{ background-color: black;}</style>', unsafe_allow_html=True)
+        
+    elif color_message == "Padrão": 
+        st.markdown('<style></style>', unsafe_allow_html=True)
+
+    elif color_message == "Azul Claro e Roxo":
+        st.markdown('<style> div.message.user { background-color: #85D4FD; color: black} div.message.bot{ background-color: purple;} </style>', unsafe_allow_html=True)
+    
+    elif color_message == "Azul Claro e Cinza":
+        st.markdown('<style> div.message.user { background-color: #3797f0; color: white} div.message.bot{ background-color: gray;} </style>', unsafe_allow_html=True)
+  
+
+#div.message.user { background-color: white; color: black} div.message.bot{ background-color: black;}'
 ######## Sidebars - Filtros
 #Linguagem
 with st.sidebar:
@@ -89,12 +120,34 @@ with st.sidebar:
 with st.sidebar:
     font_size_options = ["Medium", "Small", "Large"]
     selected_font_size = st.selectbox("Font Size 🔍", font_size_options)
-    st.image('./img/gemini.png', caption='Powered by Gemini AI')
-
+    
     if selected_font_size != st.session_state["selected_font_size"]:
         set_font_size(selected_font_size)
 
+#Background Color
+with st.sidebar:
+    background_options = ["Padrão", "Branco"]
+    selected_background = st.radio(" Background 🎨", background_options)
 
+    if selected_background != st.session_state["selected_background"]:
+        set_background(selected_background)
+
+#Message-Colors
+with st.sidebar:
+    background_options_messages = ["Padrão", "Branco e Preto", "Azul Claro e Roxo", "Azul Claro e Cinza"]
+    selected_background_messages = st.radio(" Background Messages 🎨", background_options_messages)
+    st.image('./img/gemini.png', caption='Powered by Gemini AI')
+
+    if selected_background_messages != st.session_state["selected_background_messages"]:
+        set_background_messages(selected_background_messages)
+
+
+
+
+
+#### Começo das páginas e utilização do Bot
+
+# stSidebarContent
 st.title("Chat Bot 🤖💭 ")
 
 #Mudando linguagem da aba conforme o filtro
