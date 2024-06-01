@@ -1,3 +1,4 @@
 streamlit
 google.generativeai
 load_dotenv
+st_lottie
