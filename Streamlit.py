@@ -6,7 +6,7 @@ import PIL.Image
 import pathlib
 import tqdm
 import os
-from streamlit_lottie import st_lottie #Import de arquivos lottie animados
+#import streamlit_lottie #Import de arquivos lottie animados
 from dotenv import load_dotenv
 
 ## Carregando arquivo .env (variáveis de ambiente)
