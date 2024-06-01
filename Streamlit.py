@@ -291,8 +291,8 @@ with aba3:
     st.write("- **Envie um arquivo PDF!**: Envie seu currículo, um livro, revista, e pergunte sobre ele para a IA, quer um resumo? um conselho? Teste agora!")
   
   elif selected_language == "English":
-    st.write("### XXX");
-    st.write("- **XXX**: XXX")
+    st.write("### PDF's Review with an IA");
+    st.write("- **Send a PDF file!**: Send your resume/curriculum, a magazine, a book, ask about it to the IA, wants a summary? an advice? Try it now!")
   
 
 
