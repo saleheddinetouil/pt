@@ -8,7 +8,7 @@ import tqdm
 import os
 import time
 import json
-#import streamlit_lottie #Import de arquivos lottie animados
+from streamlit_lottie import st_lottie #Import de arquivos lottie animados
 from dotenv import load_dotenv
 
 ## Carregando arquivo .env (variáveis de ambiente)
@@ -120,7 +120,7 @@ with st.sidebar:
     with open('./img/Animation.json') as f:
         lottie_animation = json.load(f)
     
-    st.lottie(lottie_animation)
+    st_lottie(lottie_animation)
 
     selected_language = st.selectbox("LINGUAGEM 🌎", language_options)
 
