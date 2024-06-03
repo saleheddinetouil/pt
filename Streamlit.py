@@ -8,22 +8,25 @@ import tqdm
 import os
 import time
 import json
+import fitz
+from PyPDF2 import PdfReader
 from streamlit_lottie import st_lottie #Import de arquivos lottie animados
 from dotenv import load_dotenv
 
-## Carregando arquivo .env (variáveis de ambiente)
+## Carregando arquivo .env (variáveis de ambiente) e pegando nossa KEY da API
 load_dotenv()
 
 API_KEY = os.getenv("API_KEY");
-
+####
 genai.configure(api_key = API_KEY);
 model = genai.GenerativeModel('gemini-pro')
 chat = model.start_chat(history=[])
 
 messages = []
 image_messages = []
+pdf_messages = []
 
-# Variáveis Globais
+# Variáveis Globais de state
 if "selected_language" not in st.session_state:
     st.session_state["selected_language"] = "English"
 
@@ -36,7 +39,7 @@ if "selected_background" not in st.session_state:
 if "selected_background_messages" not in st.session_state:
     st.session_state["selected_background_messages"] = "Padrão"
 
-# Importando pasta de CSS
+# Importando pasta de CSS para estilizações globais
 def local_css(file_name):
     with open(file_name) as f:
         
@@ -61,10 +64,9 @@ def process_chat_message(user_input):
     if user_input:
         response = chat.send_message(user_input)
 
-        # Get the selected language
+        # Lingua selecionada
         selected_language = st.session_state["selected_language"]
 
-        # Determine the pronoun based on language
         if selected_language == "Português": 
             pronome = "Você"
         else:
@@ -76,6 +78,7 @@ def process_chat_message(user_input):
     else:
         st.markdown('<span id="erro">Por favor, digite alguma coisa.</span>', unsafe_allow_html=True)
 
+# Função para alterar tamanho da fonte do site, útil para acessibilidade
 def set_font_size(font_size):
     if font_size == "Small":
         st.markdown('<style>body { font-size: small; } p { font-size: small; } h1,h3 {font-size: 22px;}</style>', unsafe_allow_html=True)
@@ -84,7 +87,7 @@ def set_font_size(font_size):
     elif font_size == "Large":
         st.markdown('<style>body { font-size: large; } h3,h1 { font-size: 45px; } p {font-size: 30px;}</style>', unsafe_allow_html=True)
 
-
+# Função para alterar a cor do background do site, útil para acessibilidade
 def set_background(color):
     if color == "Branco":
         st.markdown('''<style> [data-testid="stSidebarContent"] { background-color: #D7D5CD; } [data-testid="stAppViewContainer"] { background-color: white;} 
@@ -94,7 +97,7 @@ def set_background(color):
     elif color == "Padrão": 
         st.markdown('<style></style>', unsafe_allow_html=True)
 
-
+# Função para alterar a cor do background das mensagens, útil para acessibilidade
 def set_background_messages(color_message):
     if color_message == "Branco e Preto":
         st.markdown('<style> div.message.user { background-color: white; color: black} div.message.bot{ background-color: black;}</style>', unsafe_allow_html=True)
@@ -109,8 +112,8 @@ def set_background_messages(color_message):
         st.markdown('<style> div.message.user { background-color: #3797f0; color: white} div.message.bot{ background-color: gray;} </style>', unsafe_allow_html=True)
   
 
-#div.message.user { background-color: white; color: black} div.message.bot{ background-color: black;}'
 ######## Sidebars - Filtros
+
 #Linguagem
 with st.sidebar:
     language_options = ["English", "Português"]
@@ -173,6 +176,7 @@ with aba1:
     if selected_language == "Português":
         st.write("### Chat Bot:")
         st.write(" 📍 **Pergunte o que quiser!** Diga um oi, pergunte qual a origem da roupa branca no reveillon, por que o céu é azul?, deixe a criatividade rolar solta (não use o bot para consultas de pesquisas, vá atrás para confiar as informações, sempre bom ter uma fonte confiável);")
+        st.markdown(f'<div class="aviso"><p>Aviso: Dependendo da pergunta, o bot </p></div>', unsafe_allow_html=True);
 
         chat_container = st.container()
 
@@ -296,7 +300,6 @@ with aba2:
 
 
 
-
 with aba3:
   if selected_language == "Português":
     st.write("### Análise de PDFs com IA");
@@ -306,11 +309,12 @@ with aba3:
     st.write("### PDF's Review with an IA");
     st.write("📍 **Send a PDF file!**: Send your resume/curriculum, a magazine, a book, ask about it to the IA, wants a summary? an advice? Try it now!")
   
+    model = genai.GenerativeModel('gemini-1.5-pro-latest')
 
 
 
 
-
+    
 
 with aba4:
   if selected_language == "Português":
@@ -320,7 +324,6 @@ with aba4:
   elif selected_language == "English":
     st.write("### XXX")
     st.write("xxx")
-
 
 
 

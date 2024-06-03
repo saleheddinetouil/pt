@@ -42,6 +42,11 @@ body {
     color: red;
 }
 
+.aviso {
+    color: red;
+    font-style: italic;
+}
+
 .stTextInput input {
     border-radius: 10px;
     padding: 10px;
