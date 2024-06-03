@@ -250,7 +250,8 @@ with aba2:
         user_input = st.chat_input("Pergunte algo sobre a imagem...", key="image_user_input")
         if user_input:
             st.session_state.image_messages.append(("Você", user_input))
-            response = chat.send_message(user_input)
+            response = model.generate_content([user_input, image])
+            response.resolve()
             st.session_state.image_messages.append(("Gemini", response.text))
             st.rerun()
 
@@ -286,10 +287,11 @@ with aba2:
 
         if user_input:
             st.session_state.image_messages.append(("You", user_input))
-            response = chat.send_message(user_input)
+            response = model.generate_content([user_input, image])
+            response.resolve()
+            #response = chat.send_message(response1)
             st.session_state.image_messages.append(("Gemini", response.text))
             st.rerun()
-
 
 
 
