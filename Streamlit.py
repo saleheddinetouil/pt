@@ -8,7 +8,7 @@ import tqdm
 import os
 import time
 import json
-import fitz
+#import fitz
 from PyPDF2 import PdfReader
 from streamlit_lottie import st_lottie #Import de arquivos lottie animados
 from dotenv import load_dotenv
@@ -176,7 +176,7 @@ with aba1:
     if selected_language == "Português":
         st.write("### Chat Bot:")
         st.write(" 📍 **Pergunte o que quiser!** Diga um oi, pergunte qual a origem da roupa branca no reveillon, por que o céu é azul?, deixe a criatividade rolar solta (não use o bot para consultas de pesquisas, vá atrás para confiar as informações, sempre bom ter uma fonte confiável);")
-        st.markdown(f'<div class="aviso"><p>Aviso: Dependendo da pergunta, o bot </p></div>', unsafe_allow_html=True);
+        st.markdown(f'<div class="aviso"><p>Aviso: Dependendo da pergunta, o bot pode acrescentar muito texto e não enviar a resposta. Seja pontual.</p></div>', unsafe_allow_html=True);
 
         chat_container = st.container()
 
@@ -314,7 +314,7 @@ with aba3:
 
 
 
-    
+
 
 with aba4:
   if selected_language == "Português":
