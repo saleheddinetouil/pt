@@ -1,3 +1,4 @@
+# Importações necessárias para o streamlit, api do google, leitura em json, lottie e etc.
 import streamlit as st
 import requests
 from PIL import Image
@@ -15,11 +16,13 @@ from io import BytesIO
 from streamlit_lottie import st_lottie #Import de arquivos lottie animados
 from dotenv import load_dotenv
 
-## Carregando arquivo .env (variáveis de ambiente) e pegando nossa KEY da API
+# Padrão da página como centralizado
+st.set_page_config(layout="centered")
+
+# Carregando arquivo .env (variáveis de ambiente) e pegando nossa KEY da API
 load_dotenv()
 
 API_KEY = os.getenv("API_KEY");
-####
 genai.configure(api_key = API_KEY);
 model = genai.GenerativeModel('gemini-pro')
 chat = model.start_chat(history=[])
@@ -28,7 +31,7 @@ messages = []
 image_messages = []
 pdf_messages = []
 
-# Variáveis Globais de state
+### Variáveis Globais de state
 if "selected_language" not in st.session_state:
     st.session_state["selected_language"] = "English"
 
@@ -216,9 +219,9 @@ with aba1:
 
         user_input = st.chat_input("Diga alguma coisa... ", key = "user_input")
         if user_input:
-            process_chat_message(user_input);
+            with st.spinner('Processando...'):
+                process_chat_message(user_input);
 
-        
         st.markdown("<div id='chat-area' style='overflow-y: auto; max-height: 500px;'></div>", unsafe_allow_html=True)
     elif selected_language == "English":
         st.write("### Chat Bot:")
@@ -238,8 +241,10 @@ with aba1:
             st.markdown('</div>', unsafe_allow_html=True)
 
         user_input = st.chat_input("Write something... ", key = "user_input")
+
         if user_input:
-            process_chat_message(user_input);
+            with st.spinner('Processing...'):
+                process_chat_message(user_input);
         
         st.markdown("<div id='chat-area' style='overflow-y: auto; max-height: 500px;'></div>", unsafe_allow_html=True)
 
@@ -335,7 +340,7 @@ with aba3:
     uploaded_file_pdf = st.file_uploader("Escolha um PDF...", type=["pdf"])
     
     if uploaded_file_pdf is not None:
-        # O gmeini precisa tranformas fazer leitura em bytes, então vamos transformar o arquivo PDF em bytes
+        # O gmeini precisa fazer leitura em bytes, segundo a própria documentação, então vamos transformar o arquivo PDF em bytes
         pdf_bytes = BytesIO(uploaded_file_pdf.read())
         
         leitor_pdf = PyPDF2.PdfReader(pdf_bytes)
@@ -427,7 +432,8 @@ with aba3:
             st.rerun()
 
 
-
+# Nessa etapa de análise de áudios, foi necessário além de checar a documentação, consultar alguns projetos similares no github,
+#pois estava ocasionando alguns problemas. Por fim deu tudo certo. Algumas partes parecidas com as abas anteriores.
 with aba4:
   if selected_language == "Português":
     st.write("### Análise de Áudio");
