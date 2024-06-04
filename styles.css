@@ -43,6 +43,7 @@ body {
 }
 
 .aviso {
+    font-size: 1rem;
     color: red;
     font-style: italic;
 }
