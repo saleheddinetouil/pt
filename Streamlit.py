@@ -24,7 +24,7 @@ load_dotenv()
 
 API_KEY = os.getenv("API_KEY");
 genai.configure(api_key = API_KEY);
-model = genai.GenerativeModel('gemini-pro')
+model = genai.GenerativeModel('gemini-1.5-flash')
 chat = model.start_chat(history=[])
 
 messages = []
@@ -257,7 +257,7 @@ with aba2:
     st.write("📍 **Envie uma imagem!**: Envie uma imagem e pergunte o que quiser sobre ela para a IA!")
     st.markdown("<p class = aviso >Aviso: A IA lê imagens de até 20MB.</p>", unsafe_allow_html=True);
 
-    model = genai.GenerativeModel('gemini-pro-vision') ## para analisar as imagens, precisamos de outra versão do gemini
+    model = genai.GenerativeModel('gemini-1.5-flash') ## para analisar as imagens, precisamos de outra versão do gemini
     uploaded_file = st.file_uploader("Escolha uma imagem...", type=["jpg", "jpeg", "png"])
     if uploaded_file is not None:
         image = Image.open(uploaded_file)
@@ -294,7 +294,7 @@ with aba2:
     st.write("📍 **Upload an image!**: Upload an image and ask the AI anything about it!")
     st.markdown("<p class = aviso>Note: IA supports up to 20MB upload</p>", unsafe_allow_html=True)
 
-    model = genai.GenerativeModel('gemini-pro-vision') ## para analisar as imagens, precisamos de outra versão do gemini
+    model = genai.GenerativeModel('gemini-1.5-flash') ## para analisar as imagens, precisamos de outra versão do gemini
     uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"], key = "image")
     if uploaded_file is not None:
         image = PIL.Image.open(uploaded_file)
